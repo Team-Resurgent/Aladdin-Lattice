@@ -1,5 +1,5 @@
 #-- Lattice Semiconductor Corporation Ltd.
-#-- Synplify OEM project file d:/dev/xblast/aladdin_xt_mods/1mb_lpcmod_ossupport\entity_lpcmod.prj
+#-- Synplify OEM project file d:/dev/xblast/aladdin_xt_mods/2mb_lpcmod_ossupport\entity_lpcmod.prj
 #-- Written on Sat Aug 10 14:46:55 2019
 
 
@@ -34,7 +34,7 @@ set_option -areadelay 0
 set_option -synthesis_onoff_pragma false
 
 #-- add_file options
-add_file -vhdl -lib work "1mb_lpcmod.vhd"
+add_file -vhdl -lib work "2mb_lpcmod.vhd"
 
 #-- top module name
 set_option -top_module entity_lpcmod
