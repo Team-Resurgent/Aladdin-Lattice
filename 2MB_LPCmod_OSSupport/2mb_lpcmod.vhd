@@ -62,8 +62,8 @@ architecture arch_lpcmod of entity_lpcmod is
 
     constant c_LAD_ADDR_PATTERN1: std_Logic_vector := "1111";
 
-    constant c_LAD_ST49LF080A_ADDR_PATTERN1: std_Logic_vector := "1110"; -- 1st (highest) addr nibble. Fixed addr bit & MSB Chip ID
-    constant c_LAD_ST49LF080A_ADDR_PATTERN2: std_Logic_vector := "0100"; -- 2nd addr nibble. chip ID bit(2) & Memory access signal bit & 2 LSB Chip ID.
+    constant c_LAD_ST49LF160C_ADDR_PATTERN1: std_Logic_vector := "1100"; -- Last fixed addr bit & 2 MSB Chip ID
+    constant c_LAD_ST49LF160C_ADDR_PATTERN2: std_Logic_vector := "010"; -- chip ID bit(1) & Memory access signal bit & LSB Chip ID
 
     constant c_LAD_IOREG_PATTERN1: std_Logic_vector := "1111";
     constant c_LAD_IOREG_PATTERN2: std_Logic_vector := "0111";
@@ -115,11 +115,12 @@ architecture arch_lpcmod of entity_lpcmod is
 --***+ signals +***
     signal s_lpc_fsm_state  : LPC_FSM;                      -- 2 bit state descriptor, unless you add entries to "LPC_FSM".
     signal s_fsm_counter    : integer range c_FSM_COUNT_RESET to c_FSM_ADDR_SEQ_MAX_COUNT;         -- Used for addresses resolution and LPC_FSM_DATA state counter.
-    signal s_os_bnksw       : std_logic_vector(1 downto 0); -- OS desired bank switch state.
+    signal s_os_bnksw       : std_logic_vector(2 downto 0); -- OS desired bank switch state.
     signal s_lad_dir        : std_logic;                    -- 0 for Flash to Xbox(LPC read)
     signal s_bank1          : std_logic;                    -- Intermediate signal for pin_pad_h0
     signal s_bank2          : std_logic;                    -- Intermediate signal for pin_pad_bt
     signal s_bank2_interm   : std_logic;                    -- Combined signal for pin_pad_bt and supplement logic
+    signal s_bank3          : std_logic;                    -- Upper 1mb switch
     signal s_os_disable     : std_logic := c_FALSE_STD;     -- Flag raised by OS to disable modchip and boot from onboard Bios.
     signal s_os_kill        : std_logic := c_FALSE_STD;     -- Flag raised by OS to kill modchip. Mainly for 1.6(b) compat
     signal s_is_init        : boolean := false;             -- Explicitely defined for a reason.
@@ -131,8 +132,9 @@ architecture arch_lpcmod of entity_lpcmod is
 begin
 
 --***+ direct signals +***
+    s_bank3 <= '1' when s_os_bnkctrl = false else s_os_bnksw(2); -- Default to use upper 1mb
     s_bank2_interm <= pin_pad_bt when pin_pad_h0 = '1' and s_os_bnkctrl = false else pinout4_xbox_lad(2);
-    s_bank2 <= s_bank2_interm when (s_os_bnkctrl = false or s_os_bnksw(1) = '0')  else s_os_bnksw(0);
+    s_bank2 <= s_bank2_interm when (s_os_bnkctrl = false or (s_os_bnksw(1) = '0' and s_os_bnksw(2) = '1')) else s_os_bnksw(0);
     s_bank1 <= pin_pad_h0 when s_os_bnkctrl = false else s_os_bnksw(1);
 
     -- Put pinout_pad_l1 in high impedance if s_os_kill is set. Xbox console can read the onboard BIOS. 
@@ -228,7 +230,7 @@ begin
 
     -- Process that control both LAD ports s_lad_dir
     -- Logic is determined by "s_lpc_fsm_state" and "s_fsm_counter" within a specific "s_lpc_fsm_state" value.
-    process(s_lpc_fsm_state, s_lad_dir, s_fsm_counter, s_io_cyc, s_bank1, s_bank2)
+    process(s_lpc_fsm_state, s_lad_dir, s_fsm_counter, s_io_cyc, s_bank1, s_bank2, s_bank3)
     begin
         if s_lpc_fsm_state = LPC_FSM_DATA and s_lad_dir = c_CYC_DIRECTION_READ and s_fsm_counter >= c_FSM_DATA_SEQ_TARA2_READ and s_fsm_counter <= c_FSM_DATA_SEQ_MAX_COUNT  then  -- Sequences that reverse data flow. From LPC Flash to Xbox, during read operation.
             pinout4_flash_lad <= c_LAD_INPUT_PATTERN;     -- Flash chips is leading the show.
@@ -255,9 +257,9 @@ begin
         else    -- If not one of the condition above, it means the data flow goes from the Xbox to the LPC flash. Happens on LPC_LFRAME start, LPC_CYC decode, 8 address nibbles, LPC_TARA1, LPC_TARB2 and of course when idle.
             pinout4_xbox_lad <= c_LAD_INPUT_PATTERN;     -- Also when s_lad_dir = '1' for LPC_DATA1 and LPC_DATA2.
             if s_lpc_fsm_state = LPC_FSM_GET_ADDR and s_fsm_counter = c_FSM_ADDR_SEQ_NIBBLE1 then
-                pinout4_flash_lad <= c_LAD_ST49LF080A_ADDR_PATTERN1;
+                pinout4_flash_lad <= c_LAD_ST49LF160C_ADDR_PATTERN1;
             elsif s_lpc_fsm_state = LPC_FSM_GET_ADDR and s_fsm_counter = c_FSM_ADDR_SEQ_NIBBLE2 then 
-                pinout4_flash_lad <= c_LAD_ST49LF080A_ADDR_PATTERN2;
+                pinout4_flash_lad <= c_LAD_ST49LF160C_ADDR_PATTERN2 & s_bank3;
             elsif s_lpc_fsm_state = LPC_FSM_GET_ADDR and s_fsm_counter = c_FSM_ADDR_SEQ_NIBBLE3 then 
                 pinout4_flash_lad <= s_bank1 & s_bank2 & pinout4_xbox_lad(1 downto 0);   -- Nibble's 2 MSB are controlled either by physical switches on pin_pad_h0 and pin_pad_bt at boot or by software when OS takes control. 
                                             -- Both pin_pad_h0 and pin_pad_bt have internal pull ups so leaving these ports floating will access the 
@@ -279,8 +281,8 @@ begin
         if s_io_cyc = true and s_lpc_fsm_state = LPC_FSM_DATA and s_lad_dir = c_CYC_DIRECTION_WRITE and s_io_reg = true then       -- IO operation flag raised.
         -- Only IO write is implemented in this design.
             if s_fsm_counter = c_FSM_DATA_WRITE_LO_NIBBLE_OFFSET then -- IOWrite
-                s_os_bnksw <= pinout4_xbox_lad(1 downto 0); -- OS want to switch active flash bank
-                s_os_disable <= NOT pinout4_xbox_lad(2);
+                s_os_bnksw <= pinout4_xbox_lad(2 downto 0); -- OS want to switch active flash bank
+                s_os_disable <= NOT pinout4_xbox_lad(3);
             elsif s_fsm_counter = c_FSM_DATA_WRITE_HI_NIBBLE_OFFSET then
                 s_os_kill <= pinout4_xbox_lad(1);
                 s_os_bnkctrl <= true; -- Until power cycle
