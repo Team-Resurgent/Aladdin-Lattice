@@ -261,7 +261,7 @@ begin
             elsif s_lpc_fsm_state = LPC_FSM_GET_ADDR and s_fsm_counter = c_FSM_ADDR_SEQ_NIBBLE2 then 
                 
                 if s_os_bnksw(3) = '1' then
-                    pinout4_flash_lad <= c_LAD_ST49LF160C_ADDR_PATTERN2 & pinout4_xbox_lad(0); 
+                    pinout4_flash_lad <= pinout4_xbox_lad; 
                 else
                     pinout4_flash_lad <= c_LAD_ST49LF160C_ADDR_PATTERN2 & s_bank3; -- c_LAD_ST49LF160C_ADDR_PATTERN2 i.e. 0X0X
                 end if;
