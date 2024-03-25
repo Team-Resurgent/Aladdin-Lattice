@@ -5,7 +5,7 @@
 ! User information:
 ! File name: D:\Git\aladdin-xt-cpld\2MB_LPCmod_OSSupport\2mb_lpcmod_osssupport_epv.svf
 ! CREATED BY:    Universal File Writer V2.48
-! CREATION DATE: Sun Mar 24 18:02:14 2024
+! CREATION DATE: Sun Mar 24 21:22:27 2024
 ! Device: LC4032V(B) Erase,Program,Verify 2mb_lpcmod_osssupport.jed
 ! LATTICE_NOTE "Device" "LC4032V-XXT44"
 ! LATTICE_NOTE "Checksum/CRC" "CD2A"
@@ -18,7 +18,7 @@
 ! NOTE Copyright (C), 1992-2024, Lattice Semiconductor Corporation.
 ! NOTE All Rights Reserved.     :
 ! NOTE DESIGN NAME         :2mb_lpcmod_osssupport
-! NOTE DATE CREATED        :Sun Mar 24 18:02:12 2024
+! NOTE DATE CREATED        :Sun Mar 24 21:22:25 2024
 ! NOTE DEVICE NAME         :LC4032V-10T44I
 ! NOTE DEVICE TEMPLATE     :M4S_32_30
 ! NOTE PIN ASSIGNMENTS
