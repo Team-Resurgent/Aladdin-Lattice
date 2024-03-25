@@ -91,9 +91,9 @@ architecture arch_lpcmod of entity_lpcmod is
 
     constant c_LAD_PATTERN_SYNC: std_Logic_vector := "0000";
 
-    constant c_DEV_ID_LOW_NIBBLE: std_logic_vector := "0110";  -- Indicate new 2mb variant 0x69
-    constant c_DEV_ID_HIGH_NIBBLE: std_logic_vector := "1001"; 
-    
+    constant c_DEV_ID_HIGH_NIBBLE: std_logic_vector := "0110";  -- Indicate new 2mb variant 0x69
+    constant c_DEV_ID_LOW_NIBBLE: std_logic_vector := "1001"; 
+
     constant c_FSM_ADDR_SEQ_NIBBLE0: integer := 0;
     constant c_FSM_ADDR_SEQ_NIBBLE1: integer := 1;
     constant c_FSM_ADDR_SEQ_NIBBLE2: integer := 2;
