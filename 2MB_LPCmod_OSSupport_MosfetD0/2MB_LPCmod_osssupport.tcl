@@ -47290,3 +47290,1427 @@ if [runCmd "\"$cpld_bin/synsvf\" -exe \"$install_dir/ispvmsystem/ispufw\" -prj 2
 
 ########## Tcl recorder end at 03/26/24 12:15:40 ###########
 
+
+########## Tcl recorder starts at 03/26/24 14:41:15 ##########
+
+# Commands to make the Process: 
+# JEDEC File
+if [catch {open entity_lpcmod.cmd w} rspFile] {
+	puts stderr "Cannot create response file entity_lpcmod.cmd: $rspFile"
+} else {
+	puts $rspFile "STYFILENAME: 2mb_lpcmod_osssupport.sty
+PROJECT: entity_lpcmod
+WORKING_PATH: \"$proj_dir\"
+MODULE: entity_lpcmod
+VHDL_FILE_LIST: 2mb_lpcmod.vhd
+OUTPUT_FILE_NAME: entity_lpcmod
+SUFFIX_NAME: edi
+FREQUENCY:  200
+FANIN_LIMIT:  20
+DISABLE_IO_INSERTION: false
+MAX_TERMS_PER_MACROCELL:  16
+MAP_LOGIC: false
+SYMBOLIC_FSM_COMPILER: true
+NUM_CRITICAL_PATHS:   3
+AUTO_CONSTRAIN_IO: true
+NUM_STARTEND_POINTS:   0
+AREADELAY:  0
+WRITE_PRF: true
+RESOURCE_SHARING: true
+COMPILER_COMPATIBLE: true
+DEFAULT_ENUM_ENCODING: default
+ARRANGE_VHDL_FILES: true
+synthesis_onoff_pragma: false
+"
+	close $rspFile
+}
+if [runCmd "\"$cpld_bin/Synpwrap\" -e entity_lpcmod -target ispmach4000b -pro "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+file delete entity_lpcmod.cmd
+if [runCmd "\"$cpld_bin/edif2blf\" -edf entity_lpcmod.edi -out entity_lpcmod.bl0 -err automake.err -log entity_lpcmod.log -prj 2mb_lpcmod_osssupport -lib \"$install_dir/ispcpld/dat/mach.edn\" -net_Vcc VCC -net_GND GND -nbx -dse -tlw -cvt YES -xor"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mblifopt\" entity_lpcmod.bl0 -collapse none -reduce none -keepwires  -err automake.err -family"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mblflink\" \"entity_lpcmod.bl1\" -o \"2mb_lpcmod_osssupport.bl2\" -omod \"2mb_lpcmod_osssupport\"  -err \"automake.err\""] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/impsrc\"  -prj 2mb_lpcmod_osssupport -lci 2mb_lpcmod_osssupport.lct -log 2mb_lpcmod_osssupport.imp -err automake.err -tti 2mb_lpcmod_osssupport.bl2 -dir $proj_dir"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/abelvci\" -vci 2mb_lpcmod_osssupport.lct -blifopt 2mb_lpcmod_osssupport.b2_"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mblifopt\" 2mb_lpcmod_osssupport.bl2 -sweep -mergefb -err automake.err -o 2mb_lpcmod_osssupport.bl3 @2mb_lpcmod_osssupport.b2_ "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/abelvci\" -vci 2mb_lpcmod_osssupport.lct -dev lc4k -diofft 2mb_lpcmod_osssupport.d0"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mdiofft\" 2mb_lpcmod_osssupport.bl3 -family AMDMACH -idev van -o 2mb_lpcmod_osssupport.bl4 -oxrf 2mb_lpcmod_osssupport.xrf -err automake.err @2mb_lpcmod_osssupport.d0 "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/abelvci\" -vci 2mb_lpcmod_osssupport.lct -dev lc4k -prefit 2mb_lpcmod_osssupport.l0"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/prefit\" -blif -inp 2mb_lpcmod_osssupport.bl4 -out 2mb_lpcmod_osssupport.bl5 -err automake.err -log 2mb_lpcmod_osssupport.log -mod entity_lpcmod @2mb_lpcmod_osssupport.l0  -sc"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [catch {open 2mb_lpcmod_osssupport.rs1 w} rspFile] {
+	puts stderr "Cannot create response file 2mb_lpcmod_osssupport.rs1: $rspFile"
+} else {
+	puts $rspFile "-i 2mb_lpcmod_osssupport.bl5 -lci 2mb_lpcmod_osssupport.lct -d m4s_32_30 -lco 2mb_lpcmod_osssupport.lco -html_rpt -fti 2mb_lpcmod_osssupport.fti -fmt PLA -tto 2mb_lpcmod_osssupport.tt4 -nojed -eqn 2mb_lpcmod_osssupport.eq3 -tmv NoInput.tmv
+-rpt_num 1
+"
+	close $rspFile
+}
+if [catch {open 2mb_lpcmod_osssupport.rs2 w} rspFile] {
+	puts stderr "Cannot create response file 2mb_lpcmod_osssupport.rs2: $rspFile"
+} else {
+	puts $rspFile "-i 2mb_lpcmod_osssupport.bl5 -lci 2mb_lpcmod_osssupport.lct -d m4s_32_30 -lco 2mb_lpcmod_osssupport.lco -html_rpt -fti 2mb_lpcmod_osssupport.fti -fmt PLA -tto 2mb_lpcmod_osssupport.tt4 -eqn 2mb_lpcmod_osssupport.eq3 -tmv NoInput.tmv
+-rpt_num 1
+"
+	close $rspFile
+}
+if [runCmd "\"$cpld_bin/lpf4k\" \"@2mb_lpcmod_osssupport.rs2\""] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+file delete 2mb_lpcmod_osssupport.rs1
+file delete 2mb_lpcmod_osssupport.rs2
+if [runCmd "\"$cpld_bin/tda\" -i 2mb_lpcmod_osssupport.bl5 -o 2mb_lpcmod_osssupport.tda -lci 2mb_lpcmod_osssupport.lct -dev m4s_32_30 -family lc4k -mod entity_lpcmod -ovec NoInput.tmv -err tda.err "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/synsvf\" -exe \"$install_dir/ispvmsystem/ispufw\" -prj 2mb_lpcmod_osssupport -if 2mb_lpcmod_osssupport.jed -j2s -log 2mb_lpcmod_osssupport.svl "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+
+########## Tcl recorder end at 03/26/24 14:41:15 ###########
+
+
+########## Tcl recorder starts at 03/26/24 14:43:21 ##########
+
+# Commands to make the Process: 
+# JEDEC File
+if [catch {open entity_lpcmod.cmd w} rspFile] {
+	puts stderr "Cannot create response file entity_lpcmod.cmd: $rspFile"
+} else {
+	puts $rspFile "STYFILENAME: 2mb_lpcmod_osssupport.sty
+PROJECT: entity_lpcmod
+WORKING_PATH: \"$proj_dir\"
+MODULE: entity_lpcmod
+VHDL_FILE_LIST: 2mb_lpcmod.vhd
+OUTPUT_FILE_NAME: entity_lpcmod
+SUFFIX_NAME: edi
+FREQUENCY:  200
+FANIN_LIMIT:  20
+DISABLE_IO_INSERTION: false
+MAX_TERMS_PER_MACROCELL:  16
+MAP_LOGIC: false
+SYMBOLIC_FSM_COMPILER: true
+NUM_CRITICAL_PATHS:   3
+AUTO_CONSTRAIN_IO: true
+NUM_STARTEND_POINTS:   0
+AREADELAY:  0
+WRITE_PRF: true
+RESOURCE_SHARING: true
+COMPILER_COMPATIBLE: true
+DEFAULT_ENUM_ENCODING: default
+ARRANGE_VHDL_FILES: true
+synthesis_onoff_pragma: false
+"
+	close $rspFile
+}
+if [runCmd "\"$cpld_bin/Synpwrap\" -e entity_lpcmod -target ispmach4000b -pro "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+file delete entity_lpcmod.cmd
+if [runCmd "\"$cpld_bin/edif2blf\" -edf entity_lpcmod.edi -out entity_lpcmod.bl0 -err automake.err -log entity_lpcmod.log -prj 2mb_lpcmod_osssupport -lib \"$install_dir/ispcpld/dat/mach.edn\" -net_Vcc VCC -net_GND GND -nbx -dse -tlw -cvt YES -xor"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mblifopt\" entity_lpcmod.bl0 -collapse none -reduce none -keepwires  -err automake.err -family"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mblflink\" \"entity_lpcmod.bl1\" -o \"2mb_lpcmod_osssupport.bl2\" -omod \"2mb_lpcmod_osssupport\"  -err \"automake.err\""] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/impsrc\"  -prj 2mb_lpcmod_osssupport -lci 2mb_lpcmod_osssupport.lct -log 2mb_lpcmod_osssupport.imp -err automake.err -tti 2mb_lpcmod_osssupport.bl2 -dir $proj_dir"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/abelvci\" -vci 2mb_lpcmod_osssupport.lct -blifopt 2mb_lpcmod_osssupport.b2_"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mblifopt\" 2mb_lpcmod_osssupport.bl2 -sweep -mergefb -err automake.err -o 2mb_lpcmod_osssupport.bl3 @2mb_lpcmod_osssupport.b2_ "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/abelvci\" -vci 2mb_lpcmod_osssupport.lct -dev lc4k -diofft 2mb_lpcmod_osssupport.d0"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mdiofft\" 2mb_lpcmod_osssupport.bl3 -family AMDMACH -idev van -o 2mb_lpcmod_osssupport.bl4 -oxrf 2mb_lpcmod_osssupport.xrf -err automake.err @2mb_lpcmod_osssupport.d0 "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/abelvci\" -vci 2mb_lpcmod_osssupport.lct -dev lc4k -prefit 2mb_lpcmod_osssupport.l0"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/prefit\" -blif -inp 2mb_lpcmod_osssupport.bl4 -out 2mb_lpcmod_osssupport.bl5 -err automake.err -log 2mb_lpcmod_osssupport.log -mod entity_lpcmod @2mb_lpcmod_osssupport.l0  -sc"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [catch {open 2mb_lpcmod_osssupport.rs1 w} rspFile] {
+	puts stderr "Cannot create response file 2mb_lpcmod_osssupport.rs1: $rspFile"
+} else {
+	puts $rspFile "-i 2mb_lpcmod_osssupport.bl5 -lci 2mb_lpcmod_osssupport.lct -d m4s_32_30 -lco 2mb_lpcmod_osssupport.lco -html_rpt -fti 2mb_lpcmod_osssupport.fti -fmt PLA -tto 2mb_lpcmod_osssupport.tt4 -nojed -eqn 2mb_lpcmod_osssupport.eq3 -tmv NoInput.tmv
+-rpt_num 1
+"
+	close $rspFile
+}
+if [catch {open 2mb_lpcmod_osssupport.rs2 w} rspFile] {
+	puts stderr "Cannot create response file 2mb_lpcmod_osssupport.rs2: $rspFile"
+} else {
+	puts $rspFile "-i 2mb_lpcmod_osssupport.bl5 -lci 2mb_lpcmod_osssupport.lct -d m4s_32_30 -lco 2mb_lpcmod_osssupport.lco -html_rpt -fti 2mb_lpcmod_osssupport.fti -fmt PLA -tto 2mb_lpcmod_osssupport.tt4 -eqn 2mb_lpcmod_osssupport.eq3 -tmv NoInput.tmv
+-rpt_num 1
+"
+	close $rspFile
+}
+if [runCmd "\"$cpld_bin/lpf4k\" \"@2mb_lpcmod_osssupport.rs2\""] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+file delete 2mb_lpcmod_osssupport.rs1
+file delete 2mb_lpcmod_osssupport.rs2
+if [runCmd "\"$cpld_bin/tda\" -i 2mb_lpcmod_osssupport.bl5 -o 2mb_lpcmod_osssupport.tda -lci 2mb_lpcmod_osssupport.lct -dev m4s_32_30 -family lc4k -mod entity_lpcmod -ovec NoInput.tmv -err tda.err "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/synsvf\" -exe \"$install_dir/ispvmsystem/ispufw\" -prj 2mb_lpcmod_osssupport -if 2mb_lpcmod_osssupport.jed -j2s -log 2mb_lpcmod_osssupport.svl "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+
+########## Tcl recorder end at 03/26/24 14:43:21 ###########
+
+
+########## Tcl recorder starts at 03/26/24 14:50:40 ##########
+
+# Commands to make the Process: 
+# Hierarchy
+if [runCmd "\"$cpld_bin/vhd2jhd\" 2mb_lpcmod.vhd -o 2mb_lpcmod.jhd -m \"$install_dir/ispcpld/generic/lib/vhd/location.map\" -p \"$install_dir/ispcpld/generic/lib\""] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+
+########## Tcl recorder end at 03/26/24 14:50:40 ###########
+
+
+########## Tcl recorder starts at 03/26/24 14:50:40 ##########
+
+# Commands to make the Process: 
+# JEDEC File
+if [catch {open entity_lpcmod.cmd w} rspFile] {
+	puts stderr "Cannot create response file entity_lpcmod.cmd: $rspFile"
+} else {
+	puts $rspFile "STYFILENAME: 2mb_lpcmod_osssupport.sty
+PROJECT: entity_lpcmod
+WORKING_PATH: \"$proj_dir\"
+MODULE: entity_lpcmod
+VHDL_FILE_LIST: 2mb_lpcmod.vhd
+OUTPUT_FILE_NAME: entity_lpcmod
+SUFFIX_NAME: edi
+FREQUENCY:  200
+FANIN_LIMIT:  20
+DISABLE_IO_INSERTION: false
+MAX_TERMS_PER_MACROCELL:  16
+MAP_LOGIC: false
+SYMBOLIC_FSM_COMPILER: true
+NUM_CRITICAL_PATHS:   3
+AUTO_CONSTRAIN_IO: true
+NUM_STARTEND_POINTS:   0
+AREADELAY:  0
+WRITE_PRF: true
+RESOURCE_SHARING: true
+COMPILER_COMPATIBLE: true
+DEFAULT_ENUM_ENCODING: default
+ARRANGE_VHDL_FILES: true
+synthesis_onoff_pragma: false
+"
+	close $rspFile
+}
+if [runCmd "\"$cpld_bin/Synpwrap\" -e entity_lpcmod -target ispmach4000b -pro "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+file delete entity_lpcmod.cmd
+if [runCmd "\"$cpld_bin/edif2blf\" -edf entity_lpcmod.edi -out entity_lpcmod.bl0 -err automake.err -log entity_lpcmod.log -prj 2mb_lpcmod_osssupport -lib \"$install_dir/ispcpld/dat/mach.edn\" -net_Vcc VCC -net_GND GND -nbx -dse -tlw -cvt YES -xor"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mblifopt\" entity_lpcmod.bl0 -collapse none -reduce none -keepwires  -err automake.err -family"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mblflink\" \"entity_lpcmod.bl1\" -o \"2mb_lpcmod_osssupport.bl2\" -omod \"2mb_lpcmod_osssupport\"  -err \"automake.err\""] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/impsrc\"  -prj 2mb_lpcmod_osssupport -lci 2mb_lpcmod_osssupport.lct -log 2mb_lpcmod_osssupport.imp -err automake.err -tti 2mb_lpcmod_osssupport.bl2 -dir $proj_dir"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/abelvci\" -vci 2mb_lpcmod_osssupport.lct -blifopt 2mb_lpcmod_osssupport.b2_"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mblifopt\" 2mb_lpcmod_osssupport.bl2 -sweep -mergefb -err automake.err -o 2mb_lpcmod_osssupport.bl3 @2mb_lpcmod_osssupport.b2_ "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/abelvci\" -vci 2mb_lpcmod_osssupport.lct -dev lc4k -diofft 2mb_lpcmod_osssupport.d0"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mdiofft\" 2mb_lpcmod_osssupport.bl3 -family AMDMACH -idev van -o 2mb_lpcmod_osssupport.bl4 -oxrf 2mb_lpcmod_osssupport.xrf -err automake.err @2mb_lpcmod_osssupport.d0 "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/abelvci\" -vci 2mb_lpcmod_osssupport.lct -dev lc4k -prefit 2mb_lpcmod_osssupport.l0"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/prefit\" -blif -inp 2mb_lpcmod_osssupport.bl4 -out 2mb_lpcmod_osssupport.bl5 -err automake.err -log 2mb_lpcmod_osssupport.log -mod entity_lpcmod @2mb_lpcmod_osssupport.l0  -sc"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [catch {open 2mb_lpcmod_osssupport.rs1 w} rspFile] {
+	puts stderr "Cannot create response file 2mb_lpcmod_osssupport.rs1: $rspFile"
+} else {
+	puts $rspFile "-i 2mb_lpcmod_osssupport.bl5 -lci 2mb_lpcmod_osssupport.lct -d m4s_32_30 -lco 2mb_lpcmod_osssupport.lco -html_rpt -fti 2mb_lpcmod_osssupport.fti -fmt PLA -tto 2mb_lpcmod_osssupport.tt4 -nojed -eqn 2mb_lpcmod_osssupport.eq3 -tmv NoInput.tmv
+-rpt_num 1
+"
+	close $rspFile
+}
+if [catch {open 2mb_lpcmod_osssupport.rs2 w} rspFile] {
+	puts stderr "Cannot create response file 2mb_lpcmod_osssupport.rs2: $rspFile"
+} else {
+	puts $rspFile "-i 2mb_lpcmod_osssupport.bl5 -lci 2mb_lpcmod_osssupport.lct -d m4s_32_30 -lco 2mb_lpcmod_osssupport.lco -html_rpt -fti 2mb_lpcmod_osssupport.fti -fmt PLA -tto 2mb_lpcmod_osssupport.tt4 -eqn 2mb_lpcmod_osssupport.eq3 -tmv NoInput.tmv
+-rpt_num 1
+"
+	close $rspFile
+}
+if [runCmd "\"$cpld_bin/lpf4k\" \"@2mb_lpcmod_osssupport.rs2\""] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+file delete 2mb_lpcmod_osssupport.rs1
+file delete 2mb_lpcmod_osssupport.rs2
+if [runCmd "\"$cpld_bin/tda\" -i 2mb_lpcmod_osssupport.bl5 -o 2mb_lpcmod_osssupport.tda -lci 2mb_lpcmod_osssupport.lct -dev m4s_32_30 -family lc4k -mod entity_lpcmod -ovec NoInput.tmv -err tda.err "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/synsvf\" -exe \"$install_dir/ispvmsystem/ispufw\" -prj 2mb_lpcmod_osssupport -if 2mb_lpcmod_osssupport.jed -j2s -log 2mb_lpcmod_osssupport.svl "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+
+########## Tcl recorder end at 03/26/24 14:50:40 ###########
+
+
+########## Tcl recorder starts at 03/26/24 14:55:54 ##########
+
+# Commands to make the Process: 
+# Hierarchy
+if [runCmd "\"$cpld_bin/vhd2jhd\" 2mb_lpcmod.vhd -o 2mb_lpcmod.jhd -m \"$install_dir/ispcpld/generic/lib/vhd/location.map\" -p \"$install_dir/ispcpld/generic/lib\""] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+
+########## Tcl recorder end at 03/26/24 14:55:54 ###########
+
+
+########## Tcl recorder starts at 03/26/24 14:55:54 ##########
+
+# Commands to make the Process: 
+# JEDEC File
+if [catch {open entity_lpcmod.cmd w} rspFile] {
+	puts stderr "Cannot create response file entity_lpcmod.cmd: $rspFile"
+} else {
+	puts $rspFile "STYFILENAME: 2mb_lpcmod_osssupport.sty
+PROJECT: entity_lpcmod
+WORKING_PATH: \"$proj_dir\"
+MODULE: entity_lpcmod
+VHDL_FILE_LIST: 2mb_lpcmod.vhd
+OUTPUT_FILE_NAME: entity_lpcmod
+SUFFIX_NAME: edi
+FREQUENCY:  200
+FANIN_LIMIT:  20
+DISABLE_IO_INSERTION: false
+MAX_TERMS_PER_MACROCELL:  16
+MAP_LOGIC: false
+SYMBOLIC_FSM_COMPILER: true
+NUM_CRITICAL_PATHS:   3
+AUTO_CONSTRAIN_IO: true
+NUM_STARTEND_POINTS:   0
+AREADELAY:  0
+WRITE_PRF: true
+RESOURCE_SHARING: true
+COMPILER_COMPATIBLE: true
+DEFAULT_ENUM_ENCODING: default
+ARRANGE_VHDL_FILES: true
+synthesis_onoff_pragma: false
+"
+	close $rspFile
+}
+if [runCmd "\"$cpld_bin/Synpwrap\" -e entity_lpcmod -target ispmach4000b -pro "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+file delete entity_lpcmod.cmd
+if [runCmd "\"$cpld_bin/edif2blf\" -edf entity_lpcmod.edi -out entity_lpcmod.bl0 -err automake.err -log entity_lpcmod.log -prj 2mb_lpcmod_osssupport -lib \"$install_dir/ispcpld/dat/mach.edn\" -net_Vcc VCC -net_GND GND -nbx -dse -tlw -cvt YES -xor"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mblifopt\" entity_lpcmod.bl0 -collapse none -reduce none -keepwires  -err automake.err -family"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mblflink\" \"entity_lpcmod.bl1\" -o \"2mb_lpcmod_osssupport.bl2\" -omod \"2mb_lpcmod_osssupport\"  -err \"automake.err\""] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/impsrc\"  -prj 2mb_lpcmod_osssupport -lci 2mb_lpcmod_osssupport.lct -log 2mb_lpcmod_osssupport.imp -err automake.err -tti 2mb_lpcmod_osssupport.bl2 -dir $proj_dir"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/abelvci\" -vci 2mb_lpcmod_osssupport.lct -blifopt 2mb_lpcmod_osssupport.b2_"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mblifopt\" 2mb_lpcmod_osssupport.bl2 -sweep -mergefb -err automake.err -o 2mb_lpcmod_osssupport.bl3 @2mb_lpcmod_osssupport.b2_ "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/abelvci\" -vci 2mb_lpcmod_osssupport.lct -dev lc4k -diofft 2mb_lpcmod_osssupport.d0"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mdiofft\" 2mb_lpcmod_osssupport.bl3 -family AMDMACH -idev van -o 2mb_lpcmod_osssupport.bl4 -oxrf 2mb_lpcmod_osssupport.xrf -err automake.err @2mb_lpcmod_osssupport.d0 "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/abelvci\" -vci 2mb_lpcmod_osssupport.lct -dev lc4k -prefit 2mb_lpcmod_osssupport.l0"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/prefit\" -blif -inp 2mb_lpcmod_osssupport.bl4 -out 2mb_lpcmod_osssupport.bl5 -err automake.err -log 2mb_lpcmod_osssupport.log -mod entity_lpcmod @2mb_lpcmod_osssupport.l0  -sc"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [catch {open 2mb_lpcmod_osssupport.rs1 w} rspFile] {
+	puts stderr "Cannot create response file 2mb_lpcmod_osssupport.rs1: $rspFile"
+} else {
+	puts $rspFile "-i 2mb_lpcmod_osssupport.bl5 -lci 2mb_lpcmod_osssupport.lct -d m4s_32_30 -lco 2mb_lpcmod_osssupport.lco -html_rpt -fti 2mb_lpcmod_osssupport.fti -fmt PLA -tto 2mb_lpcmod_osssupport.tt4 -nojed -eqn 2mb_lpcmod_osssupport.eq3 -tmv NoInput.tmv
+-rpt_num 1
+"
+	close $rspFile
+}
+if [catch {open 2mb_lpcmod_osssupport.rs2 w} rspFile] {
+	puts stderr "Cannot create response file 2mb_lpcmod_osssupport.rs2: $rspFile"
+} else {
+	puts $rspFile "-i 2mb_lpcmod_osssupport.bl5 -lci 2mb_lpcmod_osssupport.lct -d m4s_32_30 -lco 2mb_lpcmod_osssupport.lco -html_rpt -fti 2mb_lpcmod_osssupport.fti -fmt PLA -tto 2mb_lpcmod_osssupport.tt4 -eqn 2mb_lpcmod_osssupport.eq3 -tmv NoInput.tmv
+-rpt_num 1
+"
+	close $rspFile
+}
+if [runCmd "\"$cpld_bin/lpf4k\" \"@2mb_lpcmod_osssupport.rs2\""] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+file delete 2mb_lpcmod_osssupport.rs1
+file delete 2mb_lpcmod_osssupport.rs2
+if [runCmd "\"$cpld_bin/tda\" -i 2mb_lpcmod_osssupport.bl5 -o 2mb_lpcmod_osssupport.tda -lci 2mb_lpcmod_osssupport.lct -dev m4s_32_30 -family lc4k -mod entity_lpcmod -ovec NoInput.tmv -err tda.err "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/synsvf\" -exe \"$install_dir/ispvmsystem/ispufw\" -prj 2mb_lpcmod_osssupport -if 2mb_lpcmod_osssupport.jed -j2s -log 2mb_lpcmod_osssupport.svl "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+
+########## Tcl recorder end at 03/26/24 14:55:54 ###########
+
+
+########## Tcl recorder starts at 03/26/24 14:56:43 ##########
+
+# Commands to make the Process: 
+# Hierarchy
+if [runCmd "\"$cpld_bin/vhd2jhd\" 2mb_lpcmod.vhd -o 2mb_lpcmod.jhd -m \"$install_dir/ispcpld/generic/lib/vhd/location.map\" -p \"$install_dir/ispcpld/generic/lib\""] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+
+########## Tcl recorder end at 03/26/24 14:56:43 ###########
+
+
+########## Tcl recorder starts at 03/26/24 14:56:44 ##########
+
+# Commands to make the Process: 
+# JEDEC File
+if [catch {open entity_lpcmod.cmd w} rspFile] {
+	puts stderr "Cannot create response file entity_lpcmod.cmd: $rspFile"
+} else {
+	puts $rspFile "STYFILENAME: 2mb_lpcmod_osssupport.sty
+PROJECT: entity_lpcmod
+WORKING_PATH: \"$proj_dir\"
+MODULE: entity_lpcmod
+VHDL_FILE_LIST: 2mb_lpcmod.vhd
+OUTPUT_FILE_NAME: entity_lpcmod
+SUFFIX_NAME: edi
+FREQUENCY:  200
+FANIN_LIMIT:  20
+DISABLE_IO_INSERTION: false
+MAX_TERMS_PER_MACROCELL:  16
+MAP_LOGIC: false
+SYMBOLIC_FSM_COMPILER: true
+NUM_CRITICAL_PATHS:   3
+AUTO_CONSTRAIN_IO: true
+NUM_STARTEND_POINTS:   0
+AREADELAY:  0
+WRITE_PRF: true
+RESOURCE_SHARING: true
+COMPILER_COMPATIBLE: true
+DEFAULT_ENUM_ENCODING: default
+ARRANGE_VHDL_FILES: true
+synthesis_onoff_pragma: false
+"
+	close $rspFile
+}
+if [runCmd "\"$cpld_bin/Synpwrap\" -e entity_lpcmod -target ispmach4000b -pro "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+file delete entity_lpcmod.cmd
+if [runCmd "\"$cpld_bin/edif2blf\" -edf entity_lpcmod.edi -out entity_lpcmod.bl0 -err automake.err -log entity_lpcmod.log -prj 2mb_lpcmod_osssupport -lib \"$install_dir/ispcpld/dat/mach.edn\" -net_Vcc VCC -net_GND GND -nbx -dse -tlw -cvt YES -xor"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mblifopt\" entity_lpcmod.bl0 -collapse none -reduce none -keepwires  -err automake.err -family"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mblflink\" \"entity_lpcmod.bl1\" -o \"2mb_lpcmod_osssupport.bl2\" -omod \"2mb_lpcmod_osssupport\"  -err \"automake.err\""] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/impsrc\"  -prj 2mb_lpcmod_osssupport -lci 2mb_lpcmod_osssupport.lct -log 2mb_lpcmod_osssupport.imp -err automake.err -tti 2mb_lpcmod_osssupport.bl2 -dir $proj_dir"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/abelvci\" -vci 2mb_lpcmod_osssupport.lct -blifopt 2mb_lpcmod_osssupport.b2_"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mblifopt\" 2mb_lpcmod_osssupport.bl2 -sweep -mergefb -err automake.err -o 2mb_lpcmod_osssupport.bl3 @2mb_lpcmod_osssupport.b2_ "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/abelvci\" -vci 2mb_lpcmod_osssupport.lct -dev lc4k -diofft 2mb_lpcmod_osssupport.d0"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mdiofft\" 2mb_lpcmod_osssupport.bl3 -family AMDMACH -idev van -o 2mb_lpcmod_osssupport.bl4 -oxrf 2mb_lpcmod_osssupport.xrf -err automake.err @2mb_lpcmod_osssupport.d0 "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/abelvci\" -vci 2mb_lpcmod_osssupport.lct -dev lc4k -prefit 2mb_lpcmod_osssupport.l0"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/prefit\" -blif -inp 2mb_lpcmod_osssupport.bl4 -out 2mb_lpcmod_osssupport.bl5 -err automake.err -log 2mb_lpcmod_osssupport.log -mod entity_lpcmod @2mb_lpcmod_osssupport.l0  -sc"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [catch {open 2mb_lpcmod_osssupport.rs1 w} rspFile] {
+	puts stderr "Cannot create response file 2mb_lpcmod_osssupport.rs1: $rspFile"
+} else {
+	puts $rspFile "-i 2mb_lpcmod_osssupport.bl5 -lci 2mb_lpcmod_osssupport.lct -d m4s_32_30 -lco 2mb_lpcmod_osssupport.lco -html_rpt -fti 2mb_lpcmod_osssupport.fti -fmt PLA -tto 2mb_lpcmod_osssupport.tt4 -nojed -eqn 2mb_lpcmod_osssupport.eq3 -tmv NoInput.tmv
+-rpt_num 1
+"
+	close $rspFile
+}
+if [catch {open 2mb_lpcmod_osssupport.rs2 w} rspFile] {
+	puts stderr "Cannot create response file 2mb_lpcmod_osssupport.rs2: $rspFile"
+} else {
+	puts $rspFile "-i 2mb_lpcmod_osssupport.bl5 -lci 2mb_lpcmod_osssupport.lct -d m4s_32_30 -lco 2mb_lpcmod_osssupport.lco -html_rpt -fti 2mb_lpcmod_osssupport.fti -fmt PLA -tto 2mb_lpcmod_osssupport.tt4 -eqn 2mb_lpcmod_osssupport.eq3 -tmv NoInput.tmv
+-rpt_num 1
+"
+	close $rspFile
+}
+if [runCmd "\"$cpld_bin/lpf4k\" \"@2mb_lpcmod_osssupport.rs2\""] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+file delete 2mb_lpcmod_osssupport.rs1
+file delete 2mb_lpcmod_osssupport.rs2
+if [runCmd "\"$cpld_bin/tda\" -i 2mb_lpcmod_osssupport.bl5 -o 2mb_lpcmod_osssupport.tda -lci 2mb_lpcmod_osssupport.lct -dev m4s_32_30 -family lc4k -mod entity_lpcmod -ovec NoInput.tmv -err tda.err "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/synsvf\" -exe \"$install_dir/ispvmsystem/ispufw\" -prj 2mb_lpcmod_osssupport -if 2mb_lpcmod_osssupport.jed -j2s -log 2mb_lpcmod_osssupport.svl "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+
+########## Tcl recorder end at 03/26/24 14:56:44 ###########
+
+
+########## Tcl recorder starts at 03/26/24 15:07:18 ##########
+
+# Commands to make the Process: 
+# Hierarchy
+if [runCmd "\"$cpld_bin/vhd2jhd\" 2mb_lpcmod.vhd -o 2mb_lpcmod.jhd -m \"$install_dir/ispcpld/generic/lib/vhd/location.map\" -p \"$install_dir/ispcpld/generic/lib\""] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+
+########## Tcl recorder end at 03/26/24 15:07:18 ###########
+
+
+########## Tcl recorder starts at 03/26/24 15:07:18 ##########
+
+# Commands to make the Process: 
+# JEDEC File
+if [catch {open entity_lpcmod.cmd w} rspFile] {
+	puts stderr "Cannot create response file entity_lpcmod.cmd: $rspFile"
+} else {
+	puts $rspFile "STYFILENAME: 2mb_lpcmod_osssupport.sty
+PROJECT: entity_lpcmod
+WORKING_PATH: \"$proj_dir\"
+MODULE: entity_lpcmod
+VHDL_FILE_LIST: 2mb_lpcmod.vhd
+OUTPUT_FILE_NAME: entity_lpcmod
+SUFFIX_NAME: edi
+FREQUENCY:  200
+FANIN_LIMIT:  20
+DISABLE_IO_INSERTION: false
+MAX_TERMS_PER_MACROCELL:  16
+MAP_LOGIC: false
+SYMBOLIC_FSM_COMPILER: true
+NUM_CRITICAL_PATHS:   3
+AUTO_CONSTRAIN_IO: true
+NUM_STARTEND_POINTS:   0
+AREADELAY:  0
+WRITE_PRF: true
+RESOURCE_SHARING: true
+COMPILER_COMPATIBLE: true
+DEFAULT_ENUM_ENCODING: default
+ARRANGE_VHDL_FILES: true
+synthesis_onoff_pragma: false
+"
+	close $rspFile
+}
+if [runCmd "\"$cpld_bin/Synpwrap\" -e entity_lpcmod -target ispmach4000b -pro "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+file delete entity_lpcmod.cmd
+if [runCmd "\"$cpld_bin/edif2blf\" -edf entity_lpcmod.edi -out entity_lpcmod.bl0 -err automake.err -log entity_lpcmod.log -prj 2mb_lpcmod_osssupport -lib \"$install_dir/ispcpld/dat/mach.edn\" -net_Vcc VCC -net_GND GND -nbx -dse -tlw -cvt YES -xor"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mblifopt\" entity_lpcmod.bl0 -collapse none -reduce none -keepwires  -err automake.err -family"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mblflink\" \"entity_lpcmod.bl1\" -o \"2mb_lpcmod_osssupport.bl2\" -omod \"2mb_lpcmod_osssupport\"  -err \"automake.err\""] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/impsrc\"  -prj 2mb_lpcmod_osssupport -lci 2mb_lpcmod_osssupport.lct -log 2mb_lpcmod_osssupport.imp -err automake.err -tti 2mb_lpcmod_osssupport.bl2 -dir $proj_dir"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/abelvci\" -vci 2mb_lpcmod_osssupport.lct -blifopt 2mb_lpcmod_osssupport.b2_"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mblifopt\" 2mb_lpcmod_osssupport.bl2 -sweep -mergefb -err automake.err -o 2mb_lpcmod_osssupport.bl3 @2mb_lpcmod_osssupport.b2_ "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/abelvci\" -vci 2mb_lpcmod_osssupport.lct -dev lc4k -diofft 2mb_lpcmod_osssupport.d0"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mdiofft\" 2mb_lpcmod_osssupport.bl3 -family AMDMACH -idev van -o 2mb_lpcmod_osssupport.bl4 -oxrf 2mb_lpcmod_osssupport.xrf -err automake.err @2mb_lpcmod_osssupport.d0 "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/abelvci\" -vci 2mb_lpcmod_osssupport.lct -dev lc4k -prefit 2mb_lpcmod_osssupport.l0"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/prefit\" -blif -inp 2mb_lpcmod_osssupport.bl4 -out 2mb_lpcmod_osssupport.bl5 -err automake.err -log 2mb_lpcmod_osssupport.log -mod entity_lpcmod @2mb_lpcmod_osssupport.l0  -sc"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [catch {open 2mb_lpcmod_osssupport.rs1 w} rspFile] {
+	puts stderr "Cannot create response file 2mb_lpcmod_osssupport.rs1: $rspFile"
+} else {
+	puts $rspFile "-i 2mb_lpcmod_osssupport.bl5 -lci 2mb_lpcmod_osssupport.lct -d m4s_32_30 -lco 2mb_lpcmod_osssupport.lco -html_rpt -fti 2mb_lpcmod_osssupport.fti -fmt PLA -tto 2mb_lpcmod_osssupport.tt4 -nojed -eqn 2mb_lpcmod_osssupport.eq3 -tmv NoInput.tmv
+-rpt_num 1
+"
+	close $rspFile
+}
+if [catch {open 2mb_lpcmod_osssupport.rs2 w} rspFile] {
+	puts stderr "Cannot create response file 2mb_lpcmod_osssupport.rs2: $rspFile"
+} else {
+	puts $rspFile "-i 2mb_lpcmod_osssupport.bl5 -lci 2mb_lpcmod_osssupport.lct -d m4s_32_30 -lco 2mb_lpcmod_osssupport.lco -html_rpt -fti 2mb_lpcmod_osssupport.fti -fmt PLA -tto 2mb_lpcmod_osssupport.tt4 -eqn 2mb_lpcmod_osssupport.eq3 -tmv NoInput.tmv
+-rpt_num 1
+"
+	close $rspFile
+}
+if [runCmd "\"$cpld_bin/lpf4k\" \"@2mb_lpcmod_osssupport.rs2\""] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+file delete 2mb_lpcmod_osssupport.rs1
+file delete 2mb_lpcmod_osssupport.rs2
+if [runCmd "\"$cpld_bin/tda\" -i 2mb_lpcmod_osssupport.bl5 -o 2mb_lpcmod_osssupport.tda -lci 2mb_lpcmod_osssupport.lct -dev m4s_32_30 -family lc4k -mod entity_lpcmod -ovec NoInput.tmv -err tda.err "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/synsvf\" -exe \"$install_dir/ispvmsystem/ispufw\" -prj 2mb_lpcmod_osssupport -if 2mb_lpcmod_osssupport.jed -j2s -log 2mb_lpcmod_osssupport.svl "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+
+########## Tcl recorder end at 03/26/24 15:07:18 ###########
+
+
+########## Tcl recorder starts at 03/26/24 16:48:41 ##########
+
+# Commands to make the Process: 
+# JEDEC File
+if [catch {open entity_lpcmod.cmd w} rspFile] {
+	puts stderr "Cannot create response file entity_lpcmod.cmd: $rspFile"
+} else {
+	puts $rspFile "STYFILENAME: 2mb_lpcmod_osssupport.sty
+PROJECT: entity_lpcmod
+WORKING_PATH: \"$proj_dir\"
+MODULE: entity_lpcmod
+VHDL_FILE_LIST: 2mb_lpcmod.vhd
+OUTPUT_FILE_NAME: entity_lpcmod
+SUFFIX_NAME: edi
+FREQUENCY:  200
+FANIN_LIMIT:  20
+DISABLE_IO_INSERTION: false
+MAX_TERMS_PER_MACROCELL:  16
+MAP_LOGIC: false
+SYMBOLIC_FSM_COMPILER: true
+NUM_CRITICAL_PATHS:   3
+AUTO_CONSTRAIN_IO: true
+NUM_STARTEND_POINTS:   0
+AREADELAY:  0
+WRITE_PRF: true
+RESOURCE_SHARING: true
+COMPILER_COMPATIBLE: true
+DEFAULT_ENUM_ENCODING: default
+ARRANGE_VHDL_FILES: true
+synthesis_onoff_pragma: false
+"
+	close $rspFile
+}
+if [runCmd "\"$cpld_bin/Synpwrap\" -e entity_lpcmod -target ispmach4000b -pro "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+file delete entity_lpcmod.cmd
+if [runCmd "\"$cpld_bin/edif2blf\" -edf entity_lpcmod.edi -out entity_lpcmod.bl0 -err automake.err -log entity_lpcmod.log -prj 2mb_lpcmod_osssupport -lib \"$install_dir/ispcpld/dat/mach.edn\" -net_Vcc VCC -net_GND GND -nbx -dse -tlw -cvt YES -xor"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mblifopt\" entity_lpcmod.bl0 -collapse none -reduce none -keepwires  -err automake.err -family"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mblflink\" \"entity_lpcmod.bl1\" -o \"2mb_lpcmod_osssupport.bl2\" -omod \"2mb_lpcmod_osssupport\"  -err \"automake.err\""] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/impsrc\"  -prj 2mb_lpcmod_osssupport -lci 2mb_lpcmod_osssupport.lct -log 2mb_lpcmod_osssupport.imp -err automake.err -tti 2mb_lpcmod_osssupport.bl2 -dir $proj_dir"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/abelvci\" -vci 2mb_lpcmod_osssupport.lct -blifopt 2mb_lpcmod_osssupport.b2_"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mblifopt\" 2mb_lpcmod_osssupport.bl2 -sweep -mergefb -err automake.err -o 2mb_lpcmod_osssupport.bl3 @2mb_lpcmod_osssupport.b2_ "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/abelvci\" -vci 2mb_lpcmod_osssupport.lct -dev lc4k -diofft 2mb_lpcmod_osssupport.d0"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mdiofft\" 2mb_lpcmod_osssupport.bl3 -family AMDMACH -idev van -o 2mb_lpcmod_osssupport.bl4 -oxrf 2mb_lpcmod_osssupport.xrf -err automake.err @2mb_lpcmod_osssupport.d0 "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/abelvci\" -vci 2mb_lpcmod_osssupport.lct -dev lc4k -prefit 2mb_lpcmod_osssupport.l0"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/prefit\" -blif -inp 2mb_lpcmod_osssupport.bl4 -out 2mb_lpcmod_osssupport.bl5 -err automake.err -log 2mb_lpcmod_osssupport.log -mod entity_lpcmod @2mb_lpcmod_osssupport.l0  -sc"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [catch {open 2mb_lpcmod_osssupport.rs1 w} rspFile] {
+	puts stderr "Cannot create response file 2mb_lpcmod_osssupport.rs1: $rspFile"
+} else {
+	puts $rspFile "-i 2mb_lpcmod_osssupport.bl5 -lci 2mb_lpcmod_osssupport.lct -d m4s_32_30 -lco 2mb_lpcmod_osssupport.lco -html_rpt -fti 2mb_lpcmod_osssupport.fti -fmt PLA -tto 2mb_lpcmod_osssupport.tt4 -nojed -eqn 2mb_lpcmod_osssupport.eq3 -tmv NoInput.tmv
+-rpt_num 1
+"
+	close $rspFile
+}
+if [catch {open 2mb_lpcmod_osssupport.rs2 w} rspFile] {
+	puts stderr "Cannot create response file 2mb_lpcmod_osssupport.rs2: $rspFile"
+} else {
+	puts $rspFile "-i 2mb_lpcmod_osssupport.bl5 -lci 2mb_lpcmod_osssupport.lct -d m4s_32_30 -lco 2mb_lpcmod_osssupport.lco -html_rpt -fti 2mb_lpcmod_osssupport.fti -fmt PLA -tto 2mb_lpcmod_osssupport.tt4 -eqn 2mb_lpcmod_osssupport.eq3 -tmv NoInput.tmv
+-rpt_num 1
+"
+	close $rspFile
+}
+if [runCmd "\"$cpld_bin/lpf4k\" \"@2mb_lpcmod_osssupport.rs2\""] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+file delete 2mb_lpcmod_osssupport.rs1
+file delete 2mb_lpcmod_osssupport.rs2
+if [runCmd "\"$cpld_bin/tda\" -i 2mb_lpcmod_osssupport.bl5 -o 2mb_lpcmod_osssupport.tda -lci 2mb_lpcmod_osssupport.lct -dev m4s_32_30 -family lc4k -mod entity_lpcmod -ovec NoInput.tmv -err tda.err "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/synsvf\" -exe \"$install_dir/ispvmsystem/ispufw\" -prj 2mb_lpcmod_osssupport -if 2mb_lpcmod_osssupport.jed -j2s -log 2mb_lpcmod_osssupport.svl "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+
+########## Tcl recorder end at 03/26/24 16:48:41 ###########
+
+
+########## Tcl recorder starts at 03/26/24 16:59:24 ##########
+
+# Commands to make the Process: 
+# Hierarchy
+if [runCmd "\"$cpld_bin/vhd2jhd\" 2mb_lpcmod.vhd -o 2mb_lpcmod.jhd -m \"$install_dir/ispcpld/generic/lib/vhd/location.map\" -p \"$install_dir/ispcpld/generic/lib\""] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+
+########## Tcl recorder end at 03/26/24 16:59:24 ###########
+
+
+########## Tcl recorder starts at 03/26/24 16:59:24 ##########
+
+# Commands to make the Process: 
+# JEDEC File
+if [catch {open entity_lpcmod.cmd w} rspFile] {
+	puts stderr "Cannot create response file entity_lpcmod.cmd: $rspFile"
+} else {
+	puts $rspFile "STYFILENAME: 2mb_lpcmod_osssupport.sty
+PROJECT: entity_lpcmod
+WORKING_PATH: \"$proj_dir\"
+MODULE: entity_lpcmod
+VHDL_FILE_LIST: 2mb_lpcmod.vhd
+OUTPUT_FILE_NAME: entity_lpcmod
+SUFFIX_NAME: edi
+FREQUENCY:  200
+FANIN_LIMIT:  20
+DISABLE_IO_INSERTION: false
+MAX_TERMS_PER_MACROCELL:  16
+MAP_LOGIC: false
+SYMBOLIC_FSM_COMPILER: true
+NUM_CRITICAL_PATHS:   3
+AUTO_CONSTRAIN_IO: true
+NUM_STARTEND_POINTS:   0
+AREADELAY:  0
+WRITE_PRF: true
+RESOURCE_SHARING: true
+COMPILER_COMPATIBLE: true
+DEFAULT_ENUM_ENCODING: default
+ARRANGE_VHDL_FILES: true
+synthesis_onoff_pragma: false
+"
+	close $rspFile
+}
+if [runCmd "\"$cpld_bin/Synpwrap\" -e entity_lpcmod -target ispmach4000b -pro "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+file delete entity_lpcmod.cmd
+if [runCmd "\"$cpld_bin/edif2blf\" -edf entity_lpcmod.edi -out entity_lpcmod.bl0 -err automake.err -log entity_lpcmod.log -prj 2mb_lpcmod_osssupport -lib \"$install_dir/ispcpld/dat/mach.edn\" -net_Vcc VCC -net_GND GND -nbx -dse -tlw -cvt YES -xor"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mblifopt\" entity_lpcmod.bl0 -collapse none -reduce none -keepwires  -err automake.err -family"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mblflink\" \"entity_lpcmod.bl1\" -o \"2mb_lpcmod_osssupport.bl2\" -omod \"2mb_lpcmod_osssupport\"  -err \"automake.err\""] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/impsrc\"  -prj 2mb_lpcmod_osssupport -lci 2mb_lpcmod_osssupport.lct -log 2mb_lpcmod_osssupport.imp -err automake.err -tti 2mb_lpcmod_osssupport.bl2 -dir $proj_dir"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/abelvci\" -vci 2mb_lpcmod_osssupport.lct -blifopt 2mb_lpcmod_osssupport.b2_"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mblifopt\" 2mb_lpcmod_osssupport.bl2 -sweep -mergefb -err automake.err -o 2mb_lpcmod_osssupport.bl3 @2mb_lpcmod_osssupport.b2_ "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/abelvci\" -vci 2mb_lpcmod_osssupport.lct -dev lc4k -diofft 2mb_lpcmod_osssupport.d0"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/mdiofft\" 2mb_lpcmod_osssupport.bl3 -family AMDMACH -idev van -o 2mb_lpcmod_osssupport.bl4 -oxrf 2mb_lpcmod_osssupport.xrf -err automake.err @2mb_lpcmod_osssupport.d0 "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/abelvci\" -vci 2mb_lpcmod_osssupport.lct -dev lc4k -prefit 2mb_lpcmod_osssupport.l0"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/prefit\" -blif -inp 2mb_lpcmod_osssupport.bl4 -out 2mb_lpcmod_osssupport.bl5 -err automake.err -log 2mb_lpcmod_osssupport.log -mod entity_lpcmod @2mb_lpcmod_osssupport.l0  -sc"] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [catch {open 2mb_lpcmod_osssupport.rs1 w} rspFile] {
+	puts stderr "Cannot create response file 2mb_lpcmod_osssupport.rs1: $rspFile"
+} else {
+	puts $rspFile "-i 2mb_lpcmod_osssupport.bl5 -lci 2mb_lpcmod_osssupport.lct -d m4s_32_30 -lco 2mb_lpcmod_osssupport.lco -html_rpt -fti 2mb_lpcmod_osssupport.fti -fmt PLA -tto 2mb_lpcmod_osssupport.tt4 -nojed -eqn 2mb_lpcmod_osssupport.eq3 -tmv NoInput.tmv
+-rpt_num 1
+"
+	close $rspFile
+}
+if [catch {open 2mb_lpcmod_osssupport.rs2 w} rspFile] {
+	puts stderr "Cannot create response file 2mb_lpcmod_osssupport.rs2: $rspFile"
+} else {
+	puts $rspFile "-i 2mb_lpcmod_osssupport.bl5 -lci 2mb_lpcmod_osssupport.lct -d m4s_32_30 -lco 2mb_lpcmod_osssupport.lco -html_rpt -fti 2mb_lpcmod_osssupport.fti -fmt PLA -tto 2mb_lpcmod_osssupport.tt4 -eqn 2mb_lpcmod_osssupport.eq3 -tmv NoInput.tmv
+-rpt_num 1
+"
+	close $rspFile
+}
+if [runCmd "\"$cpld_bin/lpf4k\" \"@2mb_lpcmod_osssupport.rs2\""] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+file delete 2mb_lpcmod_osssupport.rs1
+file delete 2mb_lpcmod_osssupport.rs2
+if [runCmd "\"$cpld_bin/tda\" -i 2mb_lpcmod_osssupport.bl5 -o 2mb_lpcmod_osssupport.tda -lci 2mb_lpcmod_osssupport.lct -dev m4s_32_30 -family lc4k -mod entity_lpcmod -ovec NoInput.tmv -err tda.err "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+if [runCmd "\"$cpld_bin/synsvf\" -exe \"$install_dir/ispvmsystem/ispufw\" -prj 2mb_lpcmod_osssupport -if 2mb_lpcmod_osssupport.jed -j2s -log 2mb_lpcmod_osssupport.svl "] {
+	return
+} else {
+	vwait done
+	if [checkResult $done] {
+		return
+	}
+}
+
+########## Tcl recorder end at 03/26/24 16:59:24 ###########
+
