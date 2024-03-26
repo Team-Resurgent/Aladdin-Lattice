@@ -158,10 +158,10 @@ begin
     pinout_pad_l1 <= 'Z' when s_os_kill = c_TRUE_STD or pinout4_xbox_lad = c_LAD_IDLE_PATTERN or s_lpc_fsm_state /= LPC_FSM_WAIT_START else '1';    
 
     -- Puts D0 on motherboard in High-Z when s_os_disable is set. Xbox console can read the onboard TSOP.
-    pinout_pad_d0 <= 'Z' when s_os_disable = c_TRUE_STD else '0'; 
+    pinout_pad_d0 <= 'Z' when s_os_disable = c_TRUE_STD else '1'; 
 
     -- When s_os_disable is not set, pinout_pad_d0 is forced to ground and Xbox reads from LPC bus instead
-    pinout_pad_x <= 'Z' when s_os_disable = c_TRUE_STD else '0';
+    pinout_pad_x <= 'Z' when s_os_disable = c_TRUE_STD else '1';
 
     --Recreate LFRAME for Flash chip. Async.
     pout_flash_lframe <= '0' when s_os_kill = c_FALSE_STD and pinout4_xbox_lad = c_LAD_START_PATTERN and s_lpc_fsm_state = LPC_FSM_WAIT_START else '1';
