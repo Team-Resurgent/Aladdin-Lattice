@@ -145,7 +145,7 @@ begin
     s_bank <= "0100" when s_os_bnkctrl = false else s_os_bnksw(3 downto 0);
 
     -- Puts D0 on motherboard in High-Z when s_os_disable is set via mosfet. Xbox console can read the onboard TSOP.
-    pinout_pad_d0 <= '0' when (s_os_disable = c_FALSE_STD and pinout4_xbox_lad /= c_LAD_IDLE_PATTERN and s_lpc_fsm_state = LPC_FSM_WAIT_START) else '1';  
+    pinout_pad_d0 <= '0' when s_os_disable = c_TRUE_STD or (s_os_disable = c_FALSE_STD and pinout4_xbox_lad /= c_LAD_IDLE_PATTERN and s_lpc_fsm_state = LPC_FSM_WAIT_START) else '1';  
 
     --Recreate LFRAME for Flash chip. Async.
     pout_flash_lframe <= '0' when pinout4_xbox_lad = c_LAD_START_PATTERN and s_lpc_fsm_state = LPC_FSM_WAIT_START else '1';
