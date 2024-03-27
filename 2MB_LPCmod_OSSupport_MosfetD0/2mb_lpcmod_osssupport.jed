@@ -4,7 +4,7 @@ NOTE  ispLEVER Classic 2.0.00.17.20.15JEDEC Compatible Fuse File.*
 NOTE Copyright (C), 1992-2024, Lattice Semiconductor Corporation.*
 NOTE All Rights Reserved.     :*
 NOTE DESIGN NAME         :2mb_lpcmod_osssupport*
-NOTE DATE CREATED        :Wed Mar 27 13:51:24 2024*
+NOTE DATE CREATED        :Wed Mar 27 13:53:08 2024*
 NOTE DEVICE NAME         :LC4032V-10T44I*
 NOTE DEVICE TEMPLATE     :M4S_32_30*
 NOTE PIN ASSIGNMENTS*
@@ -344,4 +344,4 @@ L00000
 111111111111
 *
 CCF0D*
-BE2E
+BE32
