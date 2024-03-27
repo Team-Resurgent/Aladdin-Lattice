@@ -111,7 +111,7 @@ architecture arch_lpcmod of entity_lpcmod is
 --***+ signals +***
     signal s_lpc_fsm_state  : LPC_FSM;                      -- 2 bit state descriptor, unless you add entries to "LPC_FSM".
     signal s_fsm_counter    : integer range c_FSM_COUNT_RESET to c_FSM_ADDR_SEQ_MAX_COUNT;         -- Used for addresses resolution and LPC_FSM_DATA state counter.
-    signal s_os_bnksw       : std_logic_vector(1 downto 0) := "00"; -- OS desired bank switch state.
+    signal s_os_bnksw       : std_logic_vector(1 downto 0); -- OS desired bank switch state.
     signal s_lad_dir        : std_logic;                    -- 0 for Flash to Xbox(LPC read)
     signal s_bank1          : std_logic;                    -- Intermediate signal for pin_pad_h0
     signal s_bank2          : std_logic;                    -- Intermediate signal for pin_pad_bt
