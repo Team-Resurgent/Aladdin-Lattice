@@ -8,46 +8,25 @@ All designs require the use of internal pullups of the LC4032V CPLD to operate p
 
 Projects:
 
-**1MB_LPCmod_banks**
-    
-    Support 1MB SST49LF080A device and split in 2 * 512KB flash banks with the help of a switch connected between pad H0 and ground.
-    Optional device disable feature on long power button press by linking the BT pad to the front panel power button.
-    If not interfacing front panel power button, device is always active.
-    
 **1MB_LPCmod_OSSupport**
     
     Support 1MB SST49LF080A device and gives support to XBlast OS to manage user flash banks. Split in 1 * 512KB and 1 * 256KB user banks. 
-    Last 256KB bank is reserved for XBlast OS.
+    Last 256KB bank is reserved for XBlast OS. Uses L1 + D0 for LFrame and D0 respectivly.
     
-**1mb_LPCmod_protect**
+**1MB_LPCmod_OSSupport_MosfetD0**
     
-    Support 1MB SST49LF080A device and gives a single 1MB flash bank. Optional switch connected between pad H0 and ground can disable writing support.
-    Without any switch, write support is always enabled.
-    Optional device disable feature on long power button press by linking the BT pad to the front panel power button.
-    If not interfacing front panel power button, device is always active.
+    Support 1MB SST49LF080A device and gives support to XBlast OS to manage user flash banks. Split in 1 * 512KB and 1 * 256KB user banks. 
+    Last 256KB bank is reserved for XBlast OS. Uses D0 for either LFrame or D0.
 
-**256KB_LPCmod_protect**
+**2MB_LPCmod_OSSupport**
     
-    Support 256KB SST49LF020 and SST49LF020A devices and gives a single 256KB flash bank. Optional switch connected between pad H0 and ground can disable writing support.
-    Without any switch, write support is always enabled.
-    Optional device disable feature on long power button press by linking the BT pad to the front panel power button.
-    If not interfacing front panel power button, device is always active.
-
-**2MB_LPCMod_banks**
+    Support 2MB SST49LF160C device and gives support to PrometheOS to manage user flash banks. Split in 4 * 256KB or 2 * 512KB or 1 * 1024KB user banks. 
+    Last 1024KB is divided into 4 * 256KB banks and is reserved for PrometheOS. Uses L1 + D0 for LFrame and D0 respectivly.
     
-    PROTOTYPE! Might not work as intended.
-    Support 2MB SST49LF160C device and split in 2 * 1MB flash banks with the help of a switch connected between pad H0 and ground.
-    Optional device disable feature on long power button press by linking the BT pad to the front panel power button.
-    If not interfacing front panel power button, device is always active.
-
-**LCDCheapie**
+**2MB_LPCmod_OSSupport_MosfetD0**
     
-    UNTESTED. Might not even work as it is. Might not work in the presence of other LPC slave devices.
-    Replace modchip feature by a "LPC to character LCD" bridge. Flash chip on the target device will need to be completely removed.
-    Use pads previously interfacing the flash chip to connect character LCD signal lines.
-    Software backlight brightness support with PWM generation.
-    Usage of potentiometer for contrast adjustment is necessary.
-
+    Support 2MB SST49LF160C device and gives support to PrometheOS to manage user flash banks. Split in 4 * 256KB or 2 * 512KB or 1 * 1024KB user banks. 
+    Last 1024KB is divided into 4 * 256KB banks and is reserved for PrometheOS. Uses D0 for either LFrame or D0.
 
 Other files include images of JTAG interface on board and a table of pin mappings between the LC4032V CPLD, Flash chip and LPC interface.
 
