@@ -1,1 +1,0 @@
-project -fileorder "D:/dev/xblast/aladdin_xt_mods/lcdcheapie/lcd_cheapie.vhd" 
