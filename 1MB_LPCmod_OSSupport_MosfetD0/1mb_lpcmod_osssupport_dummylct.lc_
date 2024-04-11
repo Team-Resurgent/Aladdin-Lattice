@@ -117,7 +117,6 @@ pinout4_xbox_lad_3_ = pin, 21, -, B, 3;
 pinout4_xbox_lad_1_ = pin, 37, -, B, 2;
 pinout4_xbox_lad_0_ = pin, 38, -, B, 1;
 pinout_pad_d0 = pin, 29, -, B, 8;
-pinout_pad_x = Pin, 31, -, B, 10;
 s_os_bnksw_1_ = node, -, -, B, 6;
 inst_s_os_disable = node, -, -, B, 9;
 inst_s_os_bnkctrl = node, -, -, B, 0;

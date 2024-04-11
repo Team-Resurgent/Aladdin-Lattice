@@ -40,7 +40,6 @@ pin_pad_h0 = Pin, 9, -, A, 10;
 pin_xbox_lclk = Pin, 39, -, -, -;
 pin_pad_bt = Pin, 26, -, B, 7;
 pinout_pad_d0 = Pin, 29, -, B, 8;
-pinout_pad_x = Pin, 31, -, B, 10;
 pout_flash_lframe = Pin, 40, -, A, 0;
 pinout4_flash_lad_0_ = Pin, 44, -, A, 4;
 pinout4_flash_lad_1_ = Pin, 43, -, A, 3;
@@ -138,7 +137,7 @@ fMAX_1 = 30.3030, pin_xbox_lclk, pin_xbox_lclk;
 [ORP Bypass]
 
 [Register Powerup]
-RESET = pinout_pad_d0, pinout_pad_x, pout_flash_lframe, pinout4_flash_lad_0_, pinout4_flash_lad_1_, 
+RESET = pinout_pad_d0, pout_flash_lframe, pinout4_flash_lad_0_, pinout4_flash_lad_1_, 
 	pinout4_flash_lad_2_, pinout4_flash_lad_3_, pinout4_xbox_lad_0_, pinout4_xbox_lad_1_, 
 	pinout4_xbox_lad_2_, pinout4_xbox_lad_3_;
 Default = Reset;
